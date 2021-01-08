@@ -1,7 +1,7 @@
 import './App.css';
 import React, { Component} from 'react';
 import Modules from "./components/Modules"
-import Modal from 'react-modal'
+// import Modal from 'react-modal'
 import axios from 'axios'
 // var sample=[
 //     {
@@ -163,11 +163,36 @@ import axios from 'axios'
 class Board extends Component {
 
     state={
-        mod:false,
-        del:false
+        mod:"display:none",
+        del:"display:none",
+        modulename:"",
+        pinname:"",
+        valid:"Enter a unique Modal Name",
+        validd:"Enter a Existing Project Name",
+        disable:false,
+        
     }
+    getname=event=>{
+      this.setState({modulename:event.target.value})
+      this.checkvalid(0,event.target.value)
+    }
+    getpinname=event=>{
+      this.setState({pinname:event.target.value})
+      
+    }
+    delname=event=>{
+      this.setState({modulename:event.target.value})
+      this.checkvalid(1,event.target.value)
+    }
+
     async componentDidMount() {
+     if(localStorage.getItem('current')){
+      localStorage.removeItem('current')
+      localStorage.setItem('flag',1)
+       window.location.reload(false)
        
+      
+     }
         console.log(1)
         if(!localStorage.getItem('projects')){
         var value=await axios.post("http://127.0.0.1:5000/fetch",{})
@@ -198,19 +223,21 @@ class Board extends Component {
         }
         console.log(localStorage.getItem(JSON.parse(localStorage.getItem('currentmod'))))
       window.location.reload(false)
-        }}
+        } 
+      }
+      
     toggleMod=()=>{
-        if (this.state.mod===false){
-          this.setState({mod:true})}
+        if (this.state.mod==="display:none"){
+          this.setState({mod:"display:block"})}
           else{
-            this.setState({mod:false})
+            this.setState({mod:"display:none"})
           }
       }
       toggledel=()=>{
-        if (this.state.del===false){
-          this.setState({del:true})}
+        if (this.state.del==="display:none"){
+          this.setState({del:"display:block"})}
           else{
-            this.setState({del:false})
+            this.setState({del:"display:none"})
           }
       }
     async addMod(){
@@ -229,40 +256,40 @@ class Board extends Component {
         window.location.reload(false)
       
       }
-    async checkvalid(c){
+    async checkvalid(c,valx){
         var projects=JSON.parse(localStorage.getItem('currentmod'))
         if(c===0){
-        var name=document.getElementById('mn').value;
+        var name=valx
         
         if(name.length <4){
-          document.getElementById('valid').innerHTML="Minimum Length is 4"
-          document.getElementById('addm').disabled = true
+          this.state.valid="Minimum Length is 4"
+          this.state.disable = true
           return 
         }
         for (var x in projects){
           console.log(projects[x])
           if (projects[x].name===name){
-            document.getElementById('valid').innerHTML="Not Available.Enter a Valid Name."
-            document.getElementById('addm').disabled = true
+            this.state.valid="Not Available.Enter a Valid Name."
+            this.state.disable = true
             return 
           }
         }
-        document.getElementById('valid').innerHTML="Valid Entry."
-            document.getElementById('addm').disabled = false
+        this.state.valid="Valid Entry."
+        this.state.disable= false
       }
       else{
-        var dname=document.getElementById('dm').value;
+        var dname=valx
         document.getElementById('delm').disabled = true
         for (var o in projects){
           console.log(projects[o])
           if (projects[o].name===dname){
-            document.getElementById('valid').innerHTML="Press Delete"
-            document.getElementById('delm').disabled = false
+            this.state.validd="Press Delete"
+            this.state.disable= false
             return 
           }
           else{
-            document.getElementById('valid').innerHTML="InValid Entry."
-            document.getElementById('delm').disabled = true
+            this.state.validd="InValid Entry."
+            this.state.disable= true
           }
         }
        
@@ -270,8 +297,12 @@ class Board extends Component {
       }
       }
     async goback(){
-        localStorage.removeItem('current')
-        window.location.replace("http://127.0.0.1:3001/")
+        localStorage.removeItem('currentmod')
+        localStorage.removeItem('projects')
+        localStorage.removeItem('modules')
+        localStorage.removeItem('flag')
+
+        window.location.replace("http://127.0.0.1:3000/")
 
     }
     async rightScroll(){
@@ -291,42 +322,35 @@ class Board extends Component {
 
     render() {
         return (
-            <main >
-                   <Modal 
-        isOpen={this.state.mod}
-        onRequestClose={this.toggleMod}
-        contentLabel="My dialog" className="add"
-      ><br></br>
+            <main ><div  className="modal" id="addmodal" Style={this.state.mod}>
       
 <center>
         <div className="inp" >
-        <p className="centertext">Add New Project</p>
-          <input type="text" placeholder="Name" id="mn" name="uname" onKeyUp={()=>this.checkvalid(0)} class="form-control "></input><br></br>
-          <p id="valid" className="valid">Enter a unique Modal Name</p>
-          <input type="text" placeholder="Enter the first Pin" id="pn" name="pass"  class="form-control  "></input><br></br>
+        <span class="close" Style="float:right" onClick={this.toggleMod}>&times;</span>
+        <p className="centertext">Add New Module</p>
+          <input type="text" placeholder="Name" id="mn" name="uname" onKeyUp={this.getname} class="form-control "></input><br></br>
+          <p id="valid" className="valid">{this.state.valid}</p>
+          <input type="text" placeholder="Enter the first Pin" id="pn" name="pass" onKeyUp={this.getpinname} class="form-control  "></input><br></br>
          
           
-          <button class="btw" id="addm" onClick={()=>this.addMod()}>Add Module</button><br></br>
-          <button class="btw" onClick={this.toggleMod}>Cancel</button>
+          <button class="btw" id="addm" onClick={()=>this.addMod()} disabled={this.state.disable}>add</button><br></br>
+          
         </div></center>
-        </Modal>
-        <Modal 
-        isOpen={this.state.del}
-        onRequestClose={this.toggledel}
-        contentLabel="My dialog" className="add"
-      ><br></br>
+       </div>
+       <div  className="modal" id="addmodal" Style={this.state.del}>
       
 <center>
         <div className="inp" >
-        <p className="centertext">Delete Project</p>
-          <input type="text" placeholder="Name" id="dm" name="uname" onKeyUp={()=>this.checkvalid(1)} class="form-control "></input><br></br>
-          <p id="valid" className="valid">Enter a Existing Project Name</p>
+        <span class="close" Style="float:right" onClick={this.toggledel}>&times;</span>
+        <p className="centertext">Delete Modal</p>
+          <input type="text" placeholder="Name" id="dm" name="uname" onKeyUp={this.delname} class="form-control "></input><br></br>
+          <p id="valid" className="valid">{this.state.validd}</p>
         
           
-          <button class="btw" id="delm" onClick={()=>this.delMod()}>Delete</button><br></br>
-          <button class="btw" onClick={this.toggledel}>Cancel</button>
+          <button class="btw" id="delm" onClick={()=>this.delMod()} disabled={this.state.disable}>delete</button><br></br>
+         
         </div></center>
-        </Modal>
+        </div>
 
                
 
