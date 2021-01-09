@@ -1,29 +1,13 @@
 import React from 'react'
 // import { Link, Redirect } from 'react-router-dom'
 import Board from '../Board'
-// const colors=['#000','#000','#000','#000','#000','#000','#000','#000','#000','#000','#000','#000','#000']
+// import App from '../App'
+
 import {BrowserRouter as Router,Switch,Route,Link} from 'react-router-dom'
-const toBoard = ({ name, cookie }) => {
-    console.log(name)
-    localStorage.setItem('current', name)
-    var value = JSON.parse(localStorage.getItem('projects'))
+// var state={value:null}
 
-    for (var x in value) {
-        console.log(value[x].name)
-        if (value[x].name === name) {
-
-
-            localStorage.setItem('currentmod', JSON.stringify(value[x].modules))
-            break
-        }
-    }
-    console.log(localStorage.getItem(JSON.parse(localStorage.getItem('currentmod'))))
+const Boards = ({ boards, cookie,action,display }) => {
     
-   
-
-}
-const Boards = ({ boards, cookie }) => {
-    console.log(boards)
     return (
     <Router>
             {/* <Link to={routex}/>
@@ -38,15 +22,15 @@ const Boards = ({ boards, cookie }) => {
 
 
 
-<div className="grid" id="boards">
+<div className="grid" id="boards" Style={display}>
   
   {boards &&
     boards.map(({ date, name, desc, left, progress }, index) => (
-        <Link to={name}>
+        <Link to={"/board/"+name}>
       <div
         className="grid-item"
         id={name}
-        onClick={() => toBoard({ name }, cookie)}
+        onClick={() => action()}
       >
         <div className="top">
           <div Style="color:white;padding:4%;font-size:20px;margin-top:10px;">
@@ -68,10 +52,10 @@ const Boards = ({ boards, cookie }) => {
     ))}
 </div>
 <Switch>
-                    <Route path="/:id">
+                    <Route path="/board/:id" component={Board}/>
                     
-                      <Board data={null}></Board>
-                    </Route>
+                      
+                    
                   </Switch> 
 </Router>
 

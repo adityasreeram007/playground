@@ -170,6 +170,9 @@ class Board extends Component {
         valid:"Enter a unique Modal Name",
         validd:"Enter a Existing Project Name",
         disable:false,
+        values:this.props.location.pathname.slice(7,),
+        currentmod:null
+
         
     }
     getname=event=>{
@@ -184,46 +187,39 @@ class Board extends Component {
       this.setState({modulename:event.target.value})
       this.checkvalid(1,event.target.value)
     }
+getvalues(){
+  axios.post("http://127.0.0.1:5000/fetch",{}).then(value=>{
 
-    async componentDidMount() {
-     if(localStorage.getItem('current')){
-      localStorage.removeItem('current')
-      localStorage.setItem('flag',1)
-       window.location.reload(false)
-       
-      
-     }
-        console.log(1)
-        if(!localStorage.getItem('projects')){
-        var value=await axios.post("http://127.0.0.1:5000/fetch",{})
-        // console.log(value.data[0]['adityasreeram99-gmail-com']['projects'])
-        console.log(value.data.data.projects)
-        var arr=[]
-        var sample=[]
-        for(var x in value.data.data.projects){
-          arr.push(value.data.data.projects[x])
-          sample.push(value.data.data.projects[x].modules)
-        }
-        console.log(arr)
-        console.log(sample)
-        localStorage.setItem('projects',JSON.stringify(arr))
-        localStorage.setItem('modules',JSON.stringify(sample))
-        console.log(JSON.parse(localStorage.getItem('projects')))
+    var arr=[]
+    var sample=[]
+    
+    for(var x in value.data.data.projects){
+     
+      arr.push(value.data.data.projects[x])
+      sample.push(value.data.data.projects[x].modules)
+    }
+    var val=arr
+   
+    for (var i in val){
+     console.log(val[i].name)
+     if(val[i].name===this.state.values){
+         
+       console.log(val[i].modules)
         
-        var val=JSON.parse(localStorage.getItem('projects'))
-       
-        for (var i in val){
-            console.log(val[i].name)
-            if(val[i].name===localStorage.getItem('current')){
-                
-                
-                localStorage.setItem('currentmod',JSON.stringify(val[i].modules))
-                break
-            }
-        }
-        console.log(localStorage.getItem(JSON.parse(localStorage.getItem('currentmod'))))
-      window.location.reload(false)
-        } 
+         this.setState({currentmod:val[i].modules})
+         break
+     }
+ }
+    
+    })
+}
+    async componentDidMount() {
+
+     console.log("values"+this.state.values)
+     console.log("projects"+this.props.projects)
+     this.getvalues()
+    
+    
       }
       
     toggleMod=()=>{
@@ -241,23 +237,21 @@ class Board extends Component {
           }
       }
     async addMod(){
-        await axios.post("http://127.0.0.1:5000/addModule",{name:document.getElementById('mn').value,pin:document.getElementById('pn').value,project:localStorage.getItem('current')})
+        await axios.post("http://127.0.0.1:5000/addModule",{name:this.state.modulename,pin:this.state.pinname,project:this.state.values})
         
-        localStorage.removeItem('projects')
-        console.log(localStorage.getItem('projects'))
-        window.location.reload(false)
+        this.getvalues()
+        this.toggleMod()
       
       }
       async delMod(){
-        await axios.post("http://127.0.0.1:5000/delModule",{del:document.getElementById('dm').value,project:localStorage.getItem('current')})
+        await axios.post("http://127.0.0.1:5000/delModule",{del:this.state.modulename,project:this.state.values})
         
-        localStorage.removeItem('projects')
-        console.log(localStorage.getItem('projects'))
-        window.location.reload(false)
+       this.getvalues()
+       this.toggledel()
       
       }
     async checkvalid(c,valx){
-        var projects=JSON.parse(localStorage.getItem('currentmod'))
+        var projects=this.state.currentmod
         if(c===0){
         var name=valx
         
@@ -297,16 +291,13 @@ class Board extends Component {
       }
       }
     async goback(){
-        localStorage.removeItem('currentmod')
-        localStorage.removeItem('projects')
-        localStorage.removeItem('modules')
-        localStorage.removeItem('flag')
-
+      
         window.location.replace("http://127.0.0.1:3000/")
 
     }
     async rightScroll(){
         var content=document.getElementById('modules');
+        console.log(content)
         content.scrollLeft-=500;
         console.log("right")
      
@@ -376,7 +367,7 @@ class Board extends Component {
 
             </nav><center>
             <div className="boardname">
-                {localStorage.getItem('current')} Board
+                {this.state.values} Board
             </div></center>
             <div className="boardsearch" Style="padding:2%">
                 <input className="search" placeholder="Search for a Pin"></input>
@@ -387,12 +378,11 @@ class Board extends Component {
             <button  className="btn-right" onClick={this.toggledel}><i class="fa fa-minus"></i></button>
            
             <button  className="btn-right" Style="float:right" id="ls" onClick={()=>this.leftScroll()}><i class="fa fa-angle-right"></i></button>
-            <button  className="btn-right" Style="float:right" id="rs" onClick={()=>this.rightScroll()}><i class="fa fa-angle-left"></i></button>
+            <button  className="btn-right" Style="float:right" id="rs" onClick={()=>this.rightScroll(this)}><i class="fa fa-angle-left"></i></button>
                 <hr/>
             </div>
             <div className="modules">
-                <Modules modules={JSON.parse(localStorage.getItem('currentmod'))}></Modules>
-
+                {this.state.currentmod!==null?<Modules modules={this.state.currentmod}></Modules>:<div Style="font-size:xx-large;text-align:center;">Loading</div>}
             </div>
                     <div id="len1"></div><div id="len"></div>
             </main>

@@ -4,7 +4,7 @@ import React from 'react'
 // const colors=['#000','#000','#000','#000','#000','#000','#000','#000','#000','#000','#000','#000','#000']
 
 const Modules=({ modules }) => {
-    console.log(modules)
+    console.log("modules "+modules)
     if(modules!==undefined){
     return (
        

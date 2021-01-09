@@ -2,7 +2,7 @@
 import './App.css';
 import React, { Component} from 'react';
 import Boards from './components/Boards'
-import Board from './Board'
+// import Board from './Board'
 import Cookies from 'universal-cookie';
 import axios from 'axios'
 // import Modal from "react-modal"
@@ -10,7 +10,7 @@ import {
    
   Route, 
   BrowserRouter as Router,
-  Switch 
+  Switch ,Link
 } from 'react-router-dom'; 
 const cookies = new Cookies();
 // var values=[{
@@ -78,16 +78,28 @@ class App extends Component {
     flag:0,
     todate:new Date().toDateString(),
     disable:false,
-    addmodal:false
+    addmodal:false,
+    projects:null,
+    modules:null,
+    len:0,
+    len1:0,
+    visible:true
+  
     
   }
-
+  constructor(props){
+    super(props)
+    this.action=this.action.bind(this);
+  }
+  action(){
+    this.setState({visible:false})
+  }
   getprojectname=event=>{
     this.setState({projectname:event.target.value});
     this.checkvalid(0,event.target.value)
   }
   getdelprojectname=event=>{
-    console.log(1111)
+    
     this.setState({projectname:event.target.value});
     this.checkvalid(1,event.target.value)
   }
@@ -117,23 +129,21 @@ class App extends Component {
   async addProject(){
     await axios.post("http://127.0.0.1:5000/addProject",{name:this.state.projectname,date:this.state.date,days:this.state.deadline,desc:this.state.description})
     
-    localStorage.removeItem('projects')
-    console.log(localStorage.getItem('projects'))
-    window.location.reload(false)
+    this.getvalues()
+    this.toggleadd()
   
   }
   async delProject(){
     await axios.post("http://127.0.0.1:5000/delProject",{del:this.state.projectname})
     
-    localStorage.removeItem('projects')
-    console.log(localStorage.getItem('projects'))
-    window.location.reload(false)
+    this.getvalues()
+    this.toggledel()
   
   }
     
   
   async checkvalid(c,projectname){
-    var projects=JSON.parse(localStorage.getItem('projects'))
+    var projects=this.state.projects
     if(c===0){
     var name=projectname;
     
@@ -172,39 +182,38 @@ class App extends Component {
         
   }
   }
-  componentDidUpdate(){
-    
-  }
-  async componentDidMount() {
-    if(localStorage.getItem('current')){
-      this.state.flag=1
-    }
+  getvalues(){
   
+  axios.post("http://127.0.0.1:5000/fetch",{}).then(value=>{
+
+  var arr=[]
+  var sample=[]
+  
+  for(var x in value.data.data.projects){
+   
+    arr.push(value.data.data.projects[x])
+    sample.push(value.data.data.projects[x].modules)
+  }
+  this.setState({projects:arr})
+  this.setState({modules:sample})
+ console.log(this.state.projects)
+
+   
+  this.setState({len:arr.length})
+  this.setState({len1:arr.length})})
+  }
+  componentDidMount() {
+    if(window.location.pathname.length>1 && window.location.pathname[1]==='b'){
+      this.setState({visible:false})
+    }
+  console.log("app values"+this.state.visible)
     cookies.set('logged',true)
     cookies.set('user',"adityasreeram99")
     console.log(1)
-    if(!localStorage.getItem('projects')){
-    var value=await axios.post("http://127.0.0.1:5000/fetch",{})
-    // console.log(value.data[0]['adityasreeram99-gmail-com']['projects'])
-    console.log(value.data.data.projects)
-    var arr=[]
-    var sample=[]
-    for(var x in value.data.data.projects){
-      arr.push(value.data.data.projects[x])
-      sample.push(value.data.data.projects[x].modules)
-    }
-    console.log(arr)
-    console.log(sample)
-    localStorage.setItem('projects',JSON.stringify(arr))
-    localStorage.setItem('modules',JSON.stringify(sample))
-    console.log(JSON.parse(localStorage.getItem('projects')))
-  window.location.reload(false)
-    }
-      console.log(JSON.parse(localStorage.getItem('projects')).length)
-      console.log(this.state.len)
-    this.state.len=JSON.parse(localStorage.getItem('projects')).length
-    console.log(this.state.len)
-    this.state.len1=JSON.parse(localStorage.getItem('projects')).length
+   
+    this.getvalues();
+    
+   
    
   console.log(new Date().toDateString())
    
@@ -226,35 +235,11 @@ async leftScroll(){
 }
 
   render(){
+ 
 return (
         <main id="app">
-          <Router>
-          <Switch>
-            <Route path="/:id">
-            
-              <Board data={this.state.selected}></Board>
-            </Route>
-          </Switch>
-          </Router>
-          <div  className="modal" id="addmodal" Style={this.state.add}>
-          
-          <center>
-          
-
-        <div className="inp" >
-        <span class="close" Style="float:right" onClick={this.toggleadd}>&times;</span>
-        <p className="centertext">Add New Project</p>
-          <input type="text" placeholder="Name" id="pn" name="uname"  onKeyUp={this.getprojectname} class="form-control "></input><br></br>
-          <p id="valid" className="valid">{this.state.valid}</p>
-          <input type="text" placeholder="date ex: 2 jan 2020" id="pd" onKeyUp={this.getdate} name="pass"  class="form-control  "></input><br></br>
-          <input type="text" placeholder="DeadLine days" id="days" onKeyUp={this.getdeadline} name="pass"  class="form-control  "></input><br></br>
-          <input type="text" placeholder="description" id="desc" onKeyUp={this.getdesc} name="pass"  class="form-control  "></input><br></br>
-          
-          <button class="btw" id="addp" onClick={()=>this.addProject()} disabled={this.state.disable}>add</button><br></br>
-          
-        </div></center>
-
-          </div>
+         
+         
 
           {/* <Modal 
         isOpen={this.state.add}
@@ -275,25 +260,19 @@ return (
           <button class="btw" onClick={this.toggleadd}>Cancel</button>
         </div></center>
         </Modal> */}
-       <div  className="modal" id="addmodal" Style={this.state.del}>
+{/* <div  className="modal" id="addmodal" Style={this.state.welcome}>
+<p Style="text-align:center;font-size:xx-large">Welcome to PlayGround</p>
+<button>Load your Boards</button>
+</div> */}
+
+
+
       
-<center>
-        <div className="inp" >
-        <span class="close" Style="float:right" onClick={this.toggledel}>&times;</span>
-        <p className="centertext">Delete Project</p>
-          <input type="text" placeholder="Name" id="dn" name="uname" onKeyUp={this.getdelprojectname} class="form-control "></input><br></br>
-          <p id="valid" className="valid">{this.state.validd}</p>
-        
-          
-          <button class="btw" id="delp" onClick={()=>this.delProject()} disabled={this.state.disable}>delete</button><br></br>
-          
-        </div></center>
-        </div>
 
 
 
 
-          {!localStorage.getItem('flag')?
+          {this.state.visible?
           <div>
           <nav>
             <div className="nav-item">
@@ -335,24 +314,69 @@ return (
             </div>
             
             <div className="row" Style="display:flex;" >
-                <div className="details" ><span className="text" id="len1" Style="font-weight:bold;">{localStorage.getItem('projects')?JSON.parse(localStorage.getItem('projects')).length:0}</span><br/><span className="text">Total</span></div>
-                <div className="details" ><span className="text" id="len">{localStorage.getItem('projects')?JSON.parse(localStorage.getItem('projects')).length:0}</span><br/><span className="text">Progress</span></div>
+                <div className="details" ><span className="text" id="len1" Style="font-weight:bold;">{this.state.len}</span><br/><span className="text">Total</span></div>
+                <div className="details" ><span className="text" id="len">{this.state.len}</span><br/><span className="text">Progress</span></div>
                 <div className="details" ><span className="text">0</span><br/><span className="text">Completed</span></div>
                 
             </div>
             
             <div className="row" >
             <span Style="float:left" >Boards</span>
-            <button  className="btn-right" onClick={this.toggleadd}><i class="fa fa-plus"></i></button>
-            <button  className="btn-right" onClick={()=>this.toggledel()}><i class="fa fa-minus"></i></button>
+            <Router>
+              <Link to="/addproject">
+            <button  className="btn-right" onClick={this.toggleadd}><i class="fa fa-plus"></i></button></Link>
+            <Link to="/deleteproject">
+            <button  className="btn-right" onClick={()=>this.toggledel()}><i class="fa fa-minus"></i></button></Link>
+            <Switch>
+              <Route path="/addproject">
+              <div  className="modal" id="addmodal" Style={this.state.add}>
+          
+          
+          
+
+          <div className="inp" >
+          <span class="close" Style="float:right" onClick={this.toggleadd}>&times;</span>
+          <p className="centertext">Add New Project</p>
+            <input type="text" placeholder="Name" id="pn" name="uname"  onKeyUp={this.getprojectname} class="form-control "></input><br></br>
+            <p id="valid" className="valid">{this.state.valid}</p>
+            <input type="text" placeholder="date ex: 2 jan 2020" id="pd" onKeyUp={this.getdate} name="pass"  class="form-control  "></input><br></br>
+            <input type="text" placeholder="DeadLine days" id="days" onKeyUp={this.getdeadline} name="pass"  class="form-control  "></input><br></br>
+            <input type="text" placeholder="description" id="desc" onKeyUp={this.getdesc} name="pass"  class="form-control  "></input><br></br>
+            
+            <button class="btw" id="addp" onClick={()=>this.addProject()} disabled={this.state.disable}>add</button><br></br>
+            
+          </div>
+  
+            </div>
+              </Route>
+              <Route path="/deleteproject">
+              <div  className="modal" id="addmodal" Style={this.state.del}>
+      
+       
+
+      <div className="inp" >
+      <div><span class="close"  onClick={this.toggledel}>&times;</span></div>
+     
+      <p className="centertext">Delete Project</p>
+        <input type="text" placeholder="Name" id="dn" name="uname" onKeyUp={this.getdelprojectname} class="form-control "></input><br></br>
+        <p id="valid" className="valid">{this.state.validd}</p>
+      
+        
+        <button class="btw" id="delp" onClick={()=>this.delProject()} disabled={this.state.disable}>delete</button><br></br>
+        
+      </div>
+      </div>
+              </Route>
+            </Switch>
+            </Router>
             <button  className="btn-right" Style="float:right" id="ls" onClick={()=>this.leftScroll()}><i class="fa fa-angle-right"></i></button>
             <button  className="btn-right" Style="float:right" id="rs" onClick={()=>this.rightScroll()}><i class="fa fa-angle-left"></i></button>
               
             </div>
-            {/* JSON.parse(localStorage.getItem('projects')) */}
-          <Boards boards={JSON.parse(localStorage.getItem('projects'))} cookie={cookies}></Boards></div>
+          
+          {this.state.projects!==null?<Boards boards={this.state.projects} action={this.action} display={"display:flex"} ></Boards>:<div Style="font-size:xx-large;text-align:center;">Loading</div>}</div>
           </div>:
-          ""}
+          <Boards boards={this.state.projects} action={this.action} display={"display:none"}></Boards>}
 
           <script>
           </script>
