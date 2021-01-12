@@ -67,8 +67,8 @@ const cookies = new Cookies();
 class App extends Component {
   state={
     selected:null,
-    add:"display:none",
-    del:"display:none",
+    add:false,
+    del:false,
     projectname:"",
     description:"",
     date:"",
@@ -113,17 +113,17 @@ class App extends Component {
     this.setState({deadline:event.target.value})
   }
   toggleadd=()=>{
-    if (this.state.add==="display:none"){
-      this.setState({add:"display:block"})}
+    if (this.state.add===false){
+      this.setState({add:true})}
       else{
-        this.setState({add:"display:none"})
+        this.setState({add:false})
       }
   }
   toggledel=()=>{
-    if (this.state.del==="display:none"){
-      this.setState({del:"display:block"})}
+    if (this.state.del===false){
+      this.setState({del:true})}
       else{
-        this.setState({del:"display:none"})
+        this.setState({del:false})
       }
   }
   async addProject(){
@@ -204,8 +204,13 @@ class App extends Component {
   }
   componentDidMount() {
     if(window.location.pathname.length>1 && window.location.pathname[1]==='b'){
+      console.log("windowpath"+window.location.pathname.length)
       this.setState({visible:false})
     }
+    
+      console.log("windowpath"+window.location.pathname.length)
+    
+
   console.log("app values"+this.state.visible)
     cookies.set('logged',true)
     cookies.set('user',"adityasreeram99")
@@ -274,6 +279,7 @@ return (
 
           {this.state.visible?
           <div>
+            <div className="container">
           <nav>
             <div className="nav-item">
             <i class="fa fa-play"></i> PlAyGrOUnD
@@ -288,32 +294,33 @@ return (
           
 
             </div>
-            <div className="nav">
+            <div className="nav-item-right">
                <div className="themes">
-                   <button Style="background-color:#4BBF6B;border-radius:50%;font-size:xx-large;margin-right:2%" onClick={()=>this.changeTheme("#4BBF6B")}>G</button>
-                   <button Style="background-color:white;border-radius:50%;font-size:xx-large;margin-right:2%" onClick={()=>this.changeTheme("white")}>W</button>
-                   <button Style="background-color:	#FF4500;border-radius:50%;font-size:xx-large;margin-right:2%" onClick={()=>this.changeTheme("#FF4500")}>O</button>
-                   <button Style="background-color:	#7B68EE;border-radius:50%;font-size:xx-large;margin-right:2%" onClick={()=>this.changeTheme("#7B68EE")}>M</button>
+                   <button Style="background-color:#4BBF6B;border-radius:50%;font-size:xx-large;width:25%;" onClick={()=>this.changeTheme("#4BBF6B")}>G</button>
+                   <button Style="background-color:white;border-radius:50%;font-size:xx-large;width:25%;" onClick={()=>this.changeTheme("white")}>W</button>
+                   <button Style="background-color:	#FF4500;border-radius:50%;font-size:xx-large;width:25%;" onClick={()=>this.changeTheme("#FF4500")}>O</button>
+                   <button Style="background-color:	#7B68EE;border-radius:50%;font-size:xx-large;width:25%;" onClick={()=>this.changeTheme("#7B68EE")}>M</button>
             
                </div>
            </div>
-          </nav>
+          </nav></div>
+          <br/><br/>
           <div className="container">
           <div className="row">
             <span Style="float:left" >Dashboard</span>
-            <span Style="float:right" id="date">{this.state.todate}</span>
-            
-            
-            </div>
-            <hr/>
-            <div className="row" Style="padding:0%" >
-            <span Style="float:left;margin-left:5%;" >Projects</span><br/>
-            
+            <span className="date" id="date">{this.state.todate}</span>
             
             
             </div>
             
-            <div className="row" Style="display:flex;" >
+            <div className="row" Style="margin-top:0px;" >
+            <span Style="float:left;" >Projects</span><br/>
+            
+            
+            
+            </div>
+            
+            <div className="row2"  >
                 <div className="details" ><span className="text" id="len1" Style="font-weight:bold;">{this.state.len}</span><br/><span className="text">Total</span></div>
                 <div className="details" ><span className="text" id="len">{this.state.len}</span><br/><span className="text">Progress</span></div>
                 <div className="details" ><span className="text">0</span><br/><span className="text">Completed</span></div>
@@ -329,14 +336,14 @@ return (
             <button  className="btn-right" onClick={()=>this.toggledel()}><i class="fa fa-minus"></i></button></Link>
             <Switch>
               <Route path="/addproject">
-              <div  className="modal" id="addmodal" Style={this.state.add}>
+             {this.state.add===true ?<div  className="modal" id="addmodal" Style={this.state.add}>
           
           
           
 
           <div className="inp" >
           <span class="close" Style="float:right" onClick={this.toggleadd}>&times;</span>
-          <p className="centertext">Add New Project</p>
+          <p className="centertext" >Add New Project</p>
             <input type="text" placeholder="Name" id="pn" name="uname"  onKeyUp={this.getprojectname} class="form-control "></input><br></br>
             <p id="valid" className="valid">{this.state.valid}</p>
             <input type="text" placeholder="date ex: 2 jan 2020" id="pd" onKeyUp={this.getdate} name="pass"  class="form-control  "></input><br></br>
@@ -347,9 +354,10 @@ return (
             
           </div>
   
-            </div>
+            </div>:""}
               </Route>
               <Route path="/deleteproject">
+                {this.state.del===true?
               <div  className="modal" id="addmodal" Style={this.state.del}>
       
        
@@ -365,7 +373,7 @@ return (
         <button class="btw" id="delp" onClick={()=>this.delProject()} disabled={this.state.disable}>delete</button><br></br>
         
       </div>
-      </div>
+      </div>:""}
               </Route>
             </Switch>
             </Router>

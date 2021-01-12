@@ -163,26 +163,64 @@ import axios from 'axios'
 class Board extends Component {
 
     state={
-        mod:"display:none",
-        del:"display:none",
+        mod:false,
+        del:false,
         modulename:"",
-        pinname:"",
+       
         valid:"Enter a unique Modal Name",
         validd:"Enter a Existing Project Name",
         disable:false,
         values:this.props.location.pathname.slice(7,),
-        currentmod:null
+        currentmod:null,
+        pinname:"",
+        addpin:false,
+        delpin:false,
+        pinmodule:""
+
 
         
     }
+    toggleAddPin=()=>{
+      if (this.state.addpin===false){
+        this.setState({addpin:true})}
+        else{
+          this.setState({addpin:false})
+        }
+    }
+    toggleDelPin=()=>{
+      if (this.state.delpin===false){
+        this.setState({delpin:true})}
+        else{
+          this.setState({delpin:false})
+        }
+    }
+   getpinname=event=>{
+     this.setState({pinname:event.target.value})
+     this.setState({pinmodule:window.location.pathname.slice(8,)})
+     console.log(event.target.value)
+     
+
+   }
+   async addpin(){
+    await axios.post("http://127.0.0.1:5000/addPin",{module:this.state.pinmodule,pin:this.state.pinname,project:this.state.values})
+        
+    this.getvalues()
+    this.toggleDelPin()
+   }
+   async delpin(){
+    await axios.post("http://127.0.0.1:5000/delPin",{module:this.state.pinmodule,pin:this.state.pinname,project:this.state.values})
+        
+    this.getvalues()
+    this.toggleDelPin()
+   }
     getname=event=>{
       this.setState({modulename:event.target.value})
       this.checkvalid(0,event.target.value)
     }
-    getpinname=event=>{
-      this.setState({pinname:event.target.value})
+    // getpinname=event=>{
+    //   this.setState({pinname:event.target.value})
       
-    }
+    // }
     delname=event=>{
       this.setState({modulename:event.target.value})
       this.checkvalid(1,event.target.value)
@@ -214,7 +252,9 @@ getvalues(){
     })
 }
     async componentDidMount() {
-
+      window.addEventListener('popstate',e=>{
+        this.props.history.go("/")
+      })
      console.log("values"+this.state.values)
      console.log("projects"+this.props.projects)
      this.getvalues()
@@ -223,17 +263,17 @@ getvalues(){
       }
       
     toggleMod=()=>{
-        if (this.state.mod==="display:none"){
-          this.setState({mod:"display:block"})}
+        if (this.state.mod===false){
+          this.setState({mod:true})}
           else{
-            this.setState({mod:"display:none"})
+            this.setState({mod:false})
           }
       }
       toggledel=()=>{
-        if (this.state.del==="display:none"){
-          this.setState({del:"display:block"})}
+        if (this.state.del===false){
+          this.setState({del:true})}
           else{
-            this.setState({del:"display:none"})
+            this.setState({del:false})
           }
       }
     async addMod(){
@@ -313,11 +353,13 @@ getvalues(){
 
     render() {
         return (
-            <main ><div  className="modal" id="addmodal" Style={this.state.mod}>
+            <main >
+              {this.state.mod===true?
+              <div  className="modal" id="addmodal" Style={this.state.mod}>
       
-<center>
+
         <div className="inp" >
-        <span class="close" Style="float:right" onClick={this.toggleMod}>&times;</span>
+        <span class="close" Style="float:right;font-family:ubuntu" onClick={this.toggleMod}>&times;</span>
         <p className="centertext">Add New Module</p>
           <input type="text" placeholder="Name" id="mn" name="uname" onKeyUp={this.getname} class="form-control "></input><br></br>
           <p id="valid" className="valid">{this.state.valid}</p>
@@ -326,11 +368,12 @@ getvalues(){
           
           <button class="btw" id="addm" onClick={()=>this.addMod()} disabled={this.state.disable}>add</button><br></br>
           
-        </div></center>
-       </div>
+        </div>
+       </div>:""}
+       {this.state.del===true?
        <div  className="modal" id="addmodal" Style={this.state.del}>
       
-<center>
+
         <div className="inp" >
         <span class="close" Style="float:right" onClick={this.toggledel}>&times;</span>
         <p className="centertext">Delete Modal</p>
@@ -340,8 +383,8 @@ getvalues(){
           
           <button class="btw" id="delm" onClick={()=>this.delMod()} disabled={this.state.disable}>delete</button><br></br>
          
-        </div></center>
         </div>
+        </div>:""}
 
                
 
@@ -382,7 +425,7 @@ getvalues(){
                 <hr/>
             </div>
             <div className="modules">
-                {this.state.currentmod!==null?<Modules modules={this.state.currentmod}></Modules>:<div Style="font-size:xx-large;text-align:center;">Loading</div>}
+                {this.state.currentmod!==null?<Modules modules={this.state.currentmod} delpinfunc={()=>this.delpin()} addpinfunc={()=>this.addpin()} add={this.state.addpin} getpinname={this.getpinname} del={this.state.delpin} addpin={this.toggleAddPin} delpin={this.toggleDelPin}></Modules>:<div Style="font-size:xx-large;text-align:center;">Loading</div>}
             </div>
                     <div id="len1"></div><div id="len"></div>
             </main>
