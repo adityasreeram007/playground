@@ -18,8 +18,8 @@ const Modules=({ modules,add,del,addpin,delpin,getpinname,addpinfunc,delpinfunc 
                  modules && modules.map(({ name,submodules }, index) =>
                  
                 <div className="grid-item" id={name}>
-                       <div Style="float:left;color:black;font-weight:bold;font-size:x-large;">{name}</div><Link to={"/addpin/"+name}><button  className="btn-right" onClick={addpin}><i class="fa fa-plus"></i></button></Link>
-           <Link to={"/delpin/"+name}><button  className="btn-right" onClick={delpin}><i class="fa fa-minus"></i></button></Link><br/><br/>
+                       <div Style="float:left;color:black;font-weight:bold;font-size:x-large;">{name}</div><Link to={"/addpin/"+name}><button   className="btn-right" onClick={addpin}><i class="fa fa-plus"></i></button></Link>
+           <Link to={"/delpin/"+name}><button  className="btn-right"  onClick={delpin}><i class="fa fa-minus"></i></button></Link><br/><br/>
                     <div className="top1" >{
 
                 submodules && submodules.map(({val},index)=>

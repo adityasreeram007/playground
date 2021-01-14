@@ -2,7 +2,11 @@ import './App.css';
 import React, { Component} from 'react';
 import Modules from "./components/Modules"
 // import Modal from 'react-modal'
+import App from "./App"
 import axios from 'axios'
+import { Switch,BrowserRouter as Router,Route,Link } from 'react-router-dom';
+
+
 // var sample=[
 //     {
 //         name:"webdesign",
@@ -170,12 +174,13 @@ class Board extends Component {
         valid:"Enter a unique Modal Name",
         validd:"Enter a Existing Project Name",
         disable:false,
-        values:this.props.location.pathname.slice(7,),
+        values:window.location.pathname.slice(7,).replace("%20"," "),
         currentmod:null,
         pinname:"",
         addpin:false,
         delpin:false,
-        pinmodule:""
+        pinmodule:"",
+        visible:false
 
 
         
@@ -196,16 +201,19 @@ class Board extends Component {
     }
    getpinname=event=>{
      this.setState({pinname:event.target.value})
-     this.setState({pinmodule:window.location.pathname.slice(8,)})
+     var value=window.location.pathname.slice(8,)
+     value=value.replace("%20"," ")
+     this.setState({pinmodule:value})
      console.log(event.target.value)
      
 
    }
    async addpin(){
+     
     await axios.post("http://127.0.0.1:5000/addPin",{module:this.state.pinmodule,pin:this.state.pinname,project:this.state.values})
         
     this.getvalues()
-    this.toggleDelPin()
+    this.toggleAddPin()
    }
    async delpin(){
     await axios.post("http://127.0.0.1:5000/delPin",{module:this.state.pinmodule,pin:this.state.pinname,project:this.state.values})
@@ -251,9 +259,33 @@ getvalues(){
     
     })
 }
+
     async componentDidMount() {
-      window.addEventListener('popstate',e=>{
-        this.props.history.go("/")
+      console.log()
+      if(window.location.pathname.length>1){
+        this.setState({visible:true})
+      }
+      
+      window.addEventListener('popstate',function(){
+        
+        setTimeout(window.history.forward(), 0);
+        window.onunload = -1;
+        
+        
+      } )
+      if(performance.navigation.type === performance.navigation.TYPE_RELOAD && window.location.pathname.length>5){
+       window.location.replace("http://127.0.0.1:3000/")
+      
+      }
+     
+      window.addEventListener("keydown",function(event){
+        if(event.keyCode === 116) {
+
+          event.preventDefault();
+    
+          return false;
+    
+        }
       })
      console.log("values"+this.state.values)
      console.log("projects"+this.props.projects)
@@ -332,8 +364,34 @@ getvalues(){
       }
     async goback(){
       
-        window.location.replace("http://127.0.0.1:3000/")
-
+      
+        // console.log(this.props.history.push("/",{
+        //   selected:null,
+        //   add:false,
+        //   del:false,
+        //   projectname:"",
+        //   description:"",
+        //   date:"",
+        //   deadline:"",
+        //   valid:"Enter a unique Project Name",
+        //   validd:"Enter a Existing Project Name",
+        //   flag:0,
+        //   todate:new Date().toDateString(),
+        //   disable:false,
+        //   addmodal:false,
+        //   projects:null,
+        //   modules:null,
+        //   len:0,
+        //   len1:0,
+        //   visible:true
+        
+          
+        // }))
+        console.log("props")
+        console.log(this.props)
+        this.setState({visible:false})
+        this.props.action()
+       
     }
     async rightScroll(){
         var content=document.getElementById('modules');
@@ -387,17 +445,26 @@ getvalues(){
         </div>:""}
 
                
-
+            {this.state.visible===true?
+            <>
                 <nav>
                 <div className="nav-item">
-                <button className="btnadd" Style="background-color:transparent;border:hidden" onClick={()=>this.goback()}><i class="fa fa-backspace">/back</i></button>
+                  <Router>
+                    <Link to="/back">
+                <button className="btnadd" Style="background-color:transparent;border:hidden" onClick={()=>this.goback()} ><i class="fa fa-backspace">/back</i></button></Link>
+                <Switch>
+                  <Route path="/back" component={App}/>
+
+                  
+                </Switch>
+                </Router>
             </div>
             <div className="nav-item" Style="margin-left:5%">
             <i class="fa fa-play"></i> PlAyGrOUnD
             </div>
           
-            <div className="nav-item-right"><div id="date"></div></div>
-            <div className="nav">
+            
+            {/* <div className="btn">
                <div className="themes">
                    <button Style="background-color:#4BBF6B;border-radius:50%;font-size:xx-large;margin-right:2%" onClick={()=>this.changeTheme("#4BBF6B")}>G</button>
                    <button Style="background-color:white;border-radius:50%;font-size:xx-large;margin-right:2%" onClick={()=>this.changeTheme("white")}>W</button>
@@ -405,29 +472,31 @@ getvalues(){
                    <button Style="background-color:	#7B68EE;border-radius:50%;font-size:xx-large;margin-right:2%" onClick={()=>this.changeTheme("#7B68EE")}>M</button>
             
                </div>
-           </div>
+           </div> */}
 
-
-            </nav><center>
+<br/><br/>
+            </nav>
             <div className="boardname">
                 {this.state.values} Board
-            </div></center>
-            <div className="boardsearch" Style="padding:2%">
-                <input className="search" placeholder="Search for a Pin"></input>
             </div>
+            
             <div className="rowboard">
+            <div className="boardsearch" Style="padding:20px">
+                <input className="search" placeholder="Search for a Pin"></input>
+            </div><br/>
                 MoDuleS
                 <button  className="btn-right" onClick={this.toggleMod}><i class="fa fa-plus"></i></button>
             <button  className="btn-right" onClick={this.toggledel}><i class="fa fa-minus"></i></button>
            
-            <button  className="btn-right" Style="float:right" id="ls" onClick={()=>this.leftScroll()}><i class="fa fa-angle-right"></i></button>
-            <button  className="btn-right" Style="float:right" id="rs" onClick={()=>this.rightScroll(this)}><i class="fa fa-angle-left"></i></button>
+           
                 <hr/>
             </div>
-            <div className="modules">
+           
                 {this.state.currentmod!==null?<Modules modules={this.state.currentmod} delpinfunc={()=>this.delpin()} addpinfunc={()=>this.addpin()} add={this.state.addpin} getpinname={this.getpinname} del={this.state.delpin} addpin={this.toggleAddPin} delpin={this.toggleDelPin}></Modules>:<div Style="font-size:xx-large;text-align:center;">Loading</div>}
-            </div>
+            
                     <div id="len1"></div><div id="len"></div>
+
+              </>:""}
             </main>
         )
     }

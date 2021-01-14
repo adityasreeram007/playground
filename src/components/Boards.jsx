@@ -52,7 +52,7 @@ const Boards = ({ boards, cookie,action,display }) => {
     ))}
 </div>
 <Switch>
-                    <Route path="/board/:id" component={Board}/>
+                    <Route path="/board/:id" render={(props)=><Board action={action} />}/>
                     
                       
                     

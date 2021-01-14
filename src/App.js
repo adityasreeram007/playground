@@ -92,7 +92,11 @@ class App extends Component {
     this.action=this.action.bind(this);
   }
   action(){
-    this.setState({visible:false})
+    if(this.state.visible===true){
+    this.setState({visible:false})}
+    else{
+      this.setState({visible:true})
+    }
   }
   getprojectname=event=>{
     this.setState({projectname:event.target.value});
@@ -203,10 +207,15 @@ class App extends Component {
   this.setState({len1:arr.length})})
   }
   componentDidMount() {
+    if(performance.navigation.type === performance.navigation.TYPE_RELOAD ){
+     void(0)
+     
+     }
     if(window.location.pathname.length>1 && window.location.pathname[1]==='b'){
-      console.log("windowpath"+window.location.pathname.length)
-      this.setState({visible:false})
+      console.log("windowpathx"+window.location.pathname.length)
+      
     }
+    
     
       console.log("windowpath"+window.location.pathname.length)
     
@@ -223,6 +232,8 @@ class App extends Component {
   console.log(new Date().toDateString())
    
   }
+  
+  
   async changeTheme(val){
     document.getElementById('rooter').style.backgroundColor=val
 }
@@ -285,26 +296,25 @@ return (
             <i class="fa fa-play"></i> PlAyGrOUnD
             </div>
             <div className="nav-item-right">
-            {cookies.get('logged')?
-            <div className="user">Welcome , {cookies.get('user')}</div>:
-            <button className="navbtn">login</button>
+           
+            <div className="lefter">Welcome , {cookies.get('user')}</div>
             
-            }
+            
+            
            
           
 
-            </div>
-            <div className="nav-item-right">
-               <div className="themes">
-                   <button Style="background-color:#4BBF6B;border-radius:50%;font-size:xx-large;width:25%;" onClick={()=>this.changeTheme("#4BBF6B")}>G</button>
-                   <button Style="background-color:white;border-radius:50%;font-size:xx-large;width:25%;" onClick={()=>this.changeTheme("white")}>W</button>
-                   <button Style="background-color:	#FF4500;border-radius:50%;font-size:xx-large;width:25%;" onClick={()=>this.changeTheme("#FF4500")}>O</button>
-                   <button Style="background-color:	#7B68EE;border-radius:50%;font-size:xx-large;width:25%;" onClick={()=>this.changeTheme("#7B68EE")}>M</button>
+            <div className="lefter">
+               
+                   <button Style="background-color:#4BBF6B;border-radius:50%;font-size:xx-large;" onClick={()=>this.changeTheme("#4BBF6B")}>G</button>
+                   <button Style="background-color:white;border-radius:50%;font-size:xx-large;" onClick={()=>this.changeTheme("white")}>W</button>
+                   <button Style="background-color:	#FF4500;border-radius:50%;font-size:xx-large;" onClick={()=>this.changeTheme("#FF4500")}>O</button>
+                   <button Style="background-color:	#7B68EE;border-radius:50%;font-size:xx-large;;" onClick={()=>this.changeTheme("#7B68EE")}>M</button>
             
                </div>
            </div>
           </nav></div>
-          <br/><br/>
+          <br/><br/><br/>
           <div className="container">
           <div className="row">
             <span Style="float:left" >Dashboard</span>
@@ -329,7 +339,9 @@ return (
             
             <div className="row" >
             <span Style="float:left" >Boards</span>
+            
             <Router>
+            
               <Link to="/addproject">
             <button  className="btn-right" onClick={this.toggleadd}><i class="fa fa-plus"></i></button></Link>
             <Link to="/deleteproject">
@@ -349,6 +361,7 @@ return (
             <input type="text" placeholder="date ex: 2 jan 2020" id="pd" onKeyUp={this.getdate} name="pass"  class="form-control  "></input><br></br>
             <input type="text" placeholder="DeadLine days" id="days" onKeyUp={this.getdeadline} name="pass"  class="form-control  "></input><br></br>
             <input type="text" placeholder="description" id="desc" onKeyUp={this.getdesc} name="pass"  class="form-control  "></input><br></br>
+            
             
             <button class="btw" id="addp" onClick={()=>this.addProject()} disabled={this.state.disable}>add</button><br></br>
             
@@ -377,9 +390,10 @@ return (
               </Route>
             </Switch>
             </Router>
-            <button  className="btn-right" Style="float:right" id="ls" onClick={()=>this.leftScroll()}><i class="fa fa-angle-right"></i></button>
-            <button  className="btn-right" Style="float:right" id="rs" onClick={()=>this.rightScroll()}><i class="fa fa-angle-left"></i></button>
-              
+            <div className="btngrp">
+            <button  className="scr-right"  id="ls" onClick={()=>this.leftScroll()}><i class="fa fa-angle-right"></i></button>
+            <button  className="scr-right"  id="rs" onClick={()=>this.rightScroll()}><i class="fa fa-angle-left"></i></button>
+            </div>
             </div>
           
           {this.state.projects!==null?<Boards boards={this.state.projects} action={this.action} display={"display:flex"} ></Boards>:<div Style="font-size:xx-large;text-align:center;">Loading</div>}</div>

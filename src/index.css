@@ -6,7 +6,7 @@
 }
 
 body {
-    margin: 0;
+    margin: 40px 40px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -22,8 +22,8 @@ body {
 
 nav {
     font-size: xx-large;
-    height: 60px;
-    padding: 20px;
+    height: auto;
+    direction: rtl;
 }
 
 .top {
@@ -40,10 +40,16 @@ nav {
 
 .nav-item-right {
     float: right;
+    transform: translateX(180);
+}
+
+.lefter {
+    float: left;
 }
 
 .date {
     float: right;
+    margin-left: auto;
 }
 
 .row2 {
@@ -64,9 +70,10 @@ nav {
 
 .row {
     font-family: "DM Sans";
-    display: flexbox;
+    display: flex;
     font-size: xx-large;
-    padding: 5%;
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
 
 .btnadd {
@@ -74,17 +81,17 @@ nav {
 }
 
 .btn-right {
-    margin-left: 10px;
     background-color: transparent;
     border-radius: 52%;
     border: hidden;
     font-size: x-large;
+    position: relative;
 }
 
 .container {
     width: 80%;
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 ::-webkit-scrollbar {
@@ -95,7 +102,6 @@ nav {
 .modal {
     position: fixed;
     z-index: 1;
-    padding-top: 100px;
     margin-left: auto;
     margin-right: auto;
     left: 0;
@@ -105,23 +111,20 @@ nav {
     overflow: auto;
     background-color: rgb(0, 0, 0);
     background-color: rgba(0, 0, 0, 0.1);
-    vertical-align: middle;
+    display: table-cell;
 }
 
 .grid-container {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 50% 50%;
     background-color: white;
-    padding: 10px;
 }
 
 .grid-item {
     background-color: rgba(255, 255, 255, 0.8);
-    min-width: 100%;
-    padding: 20px;
     font-size: 30px;
     text-align: center;
-    height: max-content;
+    padding: 30px;
 }
 
 
@@ -150,6 +153,8 @@ nav {
     overflow-x: auto;
     padding: 0px;
     box-shadow: 50px;
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
 
 .grid1 {
@@ -161,21 +166,14 @@ nav {
 
 .details {
     border-radius: 10px;
-    margin-left: 5%;
     font-size: x-large;
     font-weight: bold;
-    width: 10%;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 
 .text {
     padding: 2%;
-}
-
-.grid-item {
-    padding: 20px;
-    font-size: 30px;
-    text-align: center;
-    width: 30%;
 }
 
 .grid-item1 {
@@ -195,52 +193,52 @@ nav {
 .boardname {
     font-family: 'MD Sans';
     font-size: xx-large;
-    padding: 2%;
+    text-align: center;
 }
 
 .search {
-    width: 400px;
-    height: 40px;
-    margin-left: 10%;
+    width: 309px;
+    float: right;
+    height: 30px;
+    margin-right: auto;
+    margin-left: auto;
     border-radius: 30px;
 }
 
 ::placeholder {
-    font-size: large;
+    font-size: x-large;
     font-family: "Ubuntu";
     text-align: center;
 }
 
 .rowboard {
-    padding: 2%;
     width: 80%;
-    margin-left: 10%;
+    margin-left: auto;
+    margin-right: auto;
     font-family: 'Poppins';
     font-size: xx-large;
     font-weight: bold;
 }
 
 .top1 {
-    width: 400px;
-    height: max-content;
+    height: auto;
     border-radius: 5px;
     background: #f1f1f1;
 }
 
 .subs {
-    padding: 2%;
+    padding: 5px;
 }
 
 .indata {
     background-color: #ffffff;
     text-align: left;
-    padding: 1%;
     color: black;
 }
 
 .themes {
     float: right;
-    display: flex;
+    display: inline;
 }
 
 .msg {
@@ -252,6 +250,20 @@ nav {
     padding: 200px;
 }
 
+.btngrp {
+    float: right;
+    margin-left: auto;
+}
+
+.scr-right {
+    margin-left: 10px;
+    background-color: transparent;
+    border-radius: 52%;
+    border: hidden;
+    font-size: x-large;
+    float: left;
+}
+
 .inp {
     text-align: center;
     position: absolute;
@@ -260,7 +272,6 @@ nav {
     padding: 80px;
     transform: translate(-50%, -50%);
     width: 320px;
-    height: 320px;
     font-size: xx-large;
     align-items: center;
     background-color: rgb(96, 98, 170);
@@ -293,10 +304,9 @@ nav {
 
 .close {
     font-size: xx-large;
-    float: right;
     font-weight: bold;
     color: white;
-    position: fixed;
+    position: absolute;
     margin-top: -90px;
     margin-left: 220px;
 }
@@ -306,16 +316,22 @@ nav {
     background-color: black;
 }
 
-@media (max-width: 750px) {
-    .inp {
-        font-size: x-large;
-        padding: 70px;
-    }
-    .form-control {
-        margin-top: 5%;
-    }
+@media (max-width: 625px) {
     nav {
-        height: 100px;
+        height: auto;
+        font-size: xxx-large;
+    }
+    .lefter {
+        text-align: center;
+    }
+    .row {
+        margin-top: 20px;
+    }
+    .date {
+        display: none;
+    }
+    .lefter button {
+        display: none;
     }
     .nav-item-right {
         float: left;
@@ -326,37 +342,19 @@ nav {
         background-color: white;
         padding: 10px;
     }
-    .grid-item {
-        background-color: rgba(255, 255, 255, 0.8);
-        font-size: 30px;
-        padding: 20px;
-        text-align: center;
-        height: max-content;
-    }
     .row2 {
         display: block;
-    }
-    .close {
-        font-size: xx-large;
-        float: right;
-        font-weight: bold;
-        color: white;
-        position: fixed;
-        margin-top: -80px;
-        margin-left: 210px;
+        padding-top: 30px;
+        padding-bottom: 30px;
     }
 }
 
-@media (max-width: 800px) {
-    .inp {
-        font-size: x-large;
-        padding: 70px;
-    }
+@media (max-width: 900px) {
     nav {
-        height: 100px;
+        height: auto;
     }
-    .form-control {
-        margin-top: 5%;
+    .row {
+        margin-top: 100px;
     }
     .nav-item-right {
         float: left;
