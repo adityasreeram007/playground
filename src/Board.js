@@ -476,10 +476,10 @@ getvalues(){
            </div> */}
 
 <br/><br/>
-            </nav></div>
+            </nav>
             <div className="boardname">
                 {this.state.values} Board
-            </div>
+            </div></div>
             
             <div className="rowboard">
             <div className="boardsearch" Style="padding:20px">
