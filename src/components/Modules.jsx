@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { Link, Switch,Route,BrowserRouter as Router } from 'react-router-dom'
 
 // const colors=['#000','#000','#000','#000','#000','#000','#000','#000','#000','#000','#000','#000','#000']
@@ -7,15 +8,23 @@ const Modules=({ modules,add,del,addpin,delpin,getpinname,addpinfunc,delpinfunc 
     console.log("modules "+modules)
    
     
-    
+    var ind=0
     if(modules!==undefined){
     return (
         
        
             <div className="container" >
                 <Router>
-            <div className="grid-container" id="modules">{
+            <div className="grid-container" id="modules">
+          
+      
+
+
+               { 
                  modules && modules.map(({ name,submodules }, index) =>
+                 
+                 
+                 
                  
                 <div className="grid-item" id={name}>
                        <div Style="float:left;color:black;font-weight:bold;font-size:x-large;">{name}</div><Link to={"/addpin/"+name}><button   className="btn-right" onClick={addpin}><i class="fa fa-plus"></i></button></Link>
@@ -25,7 +34,7 @@ const Modules=({ modules,add,del,addpin,delpin,getpinname,addpinfunc,delpinfunc 
                 submodules && submodules.map(({val},index)=>
                     <div className="subs">
                         <div className="indata">
-                        {val}
+                        {val}{ind=ind+1}
                         </div>
                         </div>
                    
@@ -33,8 +42,11 @@ const Modules=({ modules,add,del,addpin,delpin,getpinname,addpinfunc,delpinfunc 
                       </div> 
 
                     
-                </div>
-               )}
+                </div> 
+               )
+              
+               }
+               
             </div>
             <Switch>
                         <Route path="/addpin/:id">

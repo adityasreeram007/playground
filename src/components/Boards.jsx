@@ -1,7 +1,7 @@
 import React from 'react'
 // import { Link, Redirect } from 'react-router-dom'
 import Board from '../Board'
-// import App from '../App'
+import App from '../App'
 
 import {BrowserRouter as Router,Switch,Route,Link} from 'react-router-dom'
 // var state={value:null}
@@ -49,10 +49,15 @@ const Boards = ({ boards, cookie,action,display }) => {
           </div>
         </div>
       </div></Link>
-    ))}
+    ))} 
 </div>
 <Switch>
-                    <Route path="/board/:id" render={(props)=><Board action={action} />}/>
+                    <Route  path="/board/:id" render={(props)=><Board action={action} />}/>
+                    {display==="display:none"?
+                    <Route  path="/" render={()=><App/>}/>: ""
+                    
+                      }
+                     
                     
                       
                     

@@ -2,12 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import Board from './Board'
 import reportWebVitals from './reportWebVitals';
+import {BrowserRouter,Route} from 'react-router-dom';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <BrowserRouter>
+  <div>
+  <Route exact path="/"  component={App}/>
+  <Route path="/board/:id" ><Board></Board></Route>
+ 
+  </div>
+    </BrowserRouter>
+  ,
   document.getElementById('root')
 );
 

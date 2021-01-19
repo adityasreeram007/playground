@@ -2,7 +2,7 @@
 import './App.css';
 import React, { Component} from 'react';
 import Boards from './components/Boards'
-// import Board from './Board'
+import Board from './Board'
 import Cookies from 'universal-cookie';
 import axios from 'axios'
 // import Modal from "react-modal"
@@ -90,13 +90,19 @@ class App extends Component {
   constructor(props){
     super(props)
     this.action=this.action.bind(this);
+    
   }
-  action(){
+  action=(l)=>{
+    if(l===1){
+      this.setState({visible:true})
+      return
+    }
+    else{
     if(this.state.visible===true){
     this.setState({visible:false})}
     else{
       this.setState({visible:true})
-    }
+    }}
   }
   getprojectname=event=>{
     this.setState({projectname:event.target.value});
@@ -207,8 +213,10 @@ class App extends Component {
   this.setState({len1:arr.length})})
   }
   componentDidMount() {
-    if(performance.navigation.type === performance.navigation.TYPE_RELOAD ){
-     void(0)
+    console.log(window.performance)
+    if(performance.navigation.type === 1){
+      console.log("reload")
+      window.location.href="http://127.0.0.1:3000/"
      
      }
     if(window.location.pathname.length>1 && window.location.pathname[1]==='b'){
@@ -223,7 +231,7 @@ class App extends Component {
   console.log("app values"+this.state.visible)
     cookies.set('logged',true)
     cookies.set('user',"adityasreeram99")
-    console.log(1)
+    console.log(2)
    
     this.getvalues();
     
@@ -233,7 +241,9 @@ class App extends Component {
    
   }
   
-  
+  componentDidUpdate(){
+    console.log(window.location.pathname)
+  }
   async changeTheme(val){
     document.getElementById('rooter').style.backgroundColor=val
 }
@@ -256,6 +266,11 @@ return (
         <main id="app">
          
          
+      <Router>
+        <Switch>
+          <Route path="/board/:id" render={(props)=><Board action={this.action}/>}/>
+        </Switch>
+      </Router>
 
           {/* <Modal 
         isOpen={this.state.add}
@@ -284,20 +299,20 @@ return (
 
 
       
-
+          
 
 
 
           {this.state.visible?
           <div>
             <div className="container">
-          <nav>
+          <nav className="nav">
             <div className="nav-item">
             <i class="fa fa-play"></i> PlAyGrOUnD
             </div>
             <div className="nav-item-right">
            
-            <div className="lefter">Welcome , {cookies.get('user')}</div>
+            <div className="lefter">  Welcome , {cookies.get('user')}</div>
             
             
             
@@ -338,7 +353,7 @@ return (
             </div>
             
             <div className="row" >
-            <span Style="float:left" >Boards</span>
+            <span  >Boards</span>
             
             <Router>
             
@@ -398,6 +413,7 @@ return (
           
           {this.state.projects!==null?<Boards boards={this.state.projects} action={this.action} display={"display:flex"} ></Boards>:<div Style="font-size:xx-large;text-align:center;">Loading</div>}</div>
           </div>:
+          
           <Boards boards={this.state.projects} action={this.action} display={"display:none"}></Boards>}
 
           <script>

@@ -2,9 +2,9 @@ import './App.css';
 import React, { Component} from 'react';
 import Modules from "./components/Modules"
 // import Modal from 'react-modal'
-import App from "./App"
+
 import axios from 'axios'
-import { Switch,BrowserRouter as Router,Route,Link } from 'react-router-dom';
+// import { Switch,BrowserRouter as Router,Route,Link } from 'react-router-dom';
 
 
 // var sample=[
@@ -185,6 +185,7 @@ class Board extends Component {
 
         
     }
+   
     toggleAddPin=()=>{
       if (this.state.addpin===false){
         this.setState({addpin:true})}
@@ -261,22 +262,18 @@ getvalues(){
 }
 
     async componentDidMount() {
-      console.log()
+      console.log("inside board")
       if(window.location.pathname.length>1){
         this.setState({visible:true})
       }
       
-      window.addEventListener('popstate',function(){
-        
-        setTimeout(window.history.forward(), 0);
-        window.onunload = -1;
-        
-        
-      } )
-      if(performance.navigation.type === performance.navigation.TYPE_RELOAD && window.location.pathname.length>5){
-       window.location.replace("http://127.0.0.1:3000/")
+     if(window.performance){
+       console.log(window.performance)
+     }
+      // if(performance.navigation.type === 1){
+      //  window.location.href="http://127.0.0.1:3000/"
       
-      }
+      // }
      
       window.addEventListener("keydown",function(event){
         if(event.keyCode === 116) {
@@ -289,6 +286,7 @@ getvalues(){
       })
      console.log("values"+this.state.values)
      console.log("projects"+this.props.projects)
+     
      this.getvalues()
     
     
@@ -412,6 +410,8 @@ getvalues(){
     render() {
         return (
             <main >
+             
+            
               {this.state.mod===true?
               <div  className="modal" id="addmodal" Style={this.state.mod}>
       
@@ -447,19 +447,20 @@ getvalues(){
                
             {this.state.visible===true?
             <>
-                <nav>
-                <div className="nav-item">
+                <div className="container">
+                <nav className="nav">
+                {/* <div className="nav-item">
                   <Router>
-                    <Link to="/back">
+                    <Link to="/">
                 <button className="btnadd" Style="background-color:transparent;border:hidden" onClick={()=>this.goback()} ><i class="fa fa-backspace">/back</i></button></Link>
                 <Switch>
-                  <Route path="/back" component={App}/>
-
+                  <Route path="/" />
+                  
                   
                 </Switch>
                 </Router>
-            </div>
-            <div className="nav-item" Style="margin-left:5%">
+            </div> */}
+            <div className="nav-item" >
             <i class="fa fa-play"></i> PlAyGrOUnD
             </div>
           
@@ -475,7 +476,7 @@ getvalues(){
            </div> */}
 
 <br/><br/>
-            </nav>
+            </nav></div>
             <div className="boardname">
                 {this.state.values} Board
             </div>
@@ -495,8 +496,9 @@ getvalues(){
                 {this.state.currentmod!==null?<Modules modules={this.state.currentmod} delpinfunc={()=>this.delpin()} addpinfunc={()=>this.addpin()} add={this.state.addpin} getpinname={this.getpinname} del={this.state.delpin} addpin={this.toggleAddPin} delpin={this.toggleDelPin}></Modules>:<div Style="font-size:xx-large;text-align:center;">Loading</div>}
             
                     <div id="len1"></div><div id="len"></div>
+                    
 
-              </>:""}
+              </>: "" }
             </main>
         )
     }
