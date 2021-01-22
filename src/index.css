@@ -30,16 +30,13 @@ body {
     width: max-content;
     height: max-content;
     border-radius: 50px;
-    background: linear-gradient(#141e30, #243b55);
+    background: linear-gradient(#252525, #243b55);
     padding: 20px;
 }
 
-.nav-item {
-    float: left;
-}
+.nav-item {}
 
 .nav-item-right {
-    float: right;
     margin-left: auto;
 }
 
@@ -48,7 +45,6 @@ body {
 }
 
 .date {
-    float: right;
     margin-left: auto;
 }
 
@@ -88,6 +84,8 @@ body {
     position: relative;
 }
 
+.btnx {}
+
 .container {
     width: 80%;
     margin-left: auto;
@@ -123,19 +121,20 @@ body {
 .flexcolumn-sec {}
 
 .grid-container {
-    display: flex;
-    flex-flow: row;
+    display: inline-flex;
+    gap: 2%;
     flex-wrap: wrap;
     background-color: white;
 }
 
 .grid-item {
-    flex: 25%;
-    width: auto;
+    flex: 49%;
+    max-width: 49%;
     background-color: rgba(255, 255, 255, 0.8);
     font-size: 30px;
     text-align: center;
-    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 
@@ -213,6 +212,7 @@ body {
     border: 1px solid;
     border-radius: 5px;
     margin-right: auto;
+    text-align: center;
     margin-left: auto;
 }
 
@@ -234,8 +234,10 @@ body {
 .top1 {
     height: auto;
     border-radius: 5px;
-    background: #f1f1f1;
+    background-color: rgb(206, 203, 203);
 }
+
+.tophead {}
 
 .subs {
     padding: 5px;

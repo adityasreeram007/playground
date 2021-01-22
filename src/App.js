@@ -123,7 +123,9 @@ class App extends Component {
     this.setState({deadline:event.target.value})
   }
   toggleadd=()=>{
-    if (this.state.add===false){
+    console.log(window.location.pathname)
+    
+     if (this.state.add===false){
       this.setState({add:true})}
       else{
         this.setState({add:false})
@@ -259,11 +261,20 @@ async leftScroll(){
   content.scrollLeft+=500;
   
 }
+componentWillMount(){
+  window.onpopstate = (event) => {
+    // if (window.location.pathname==='/addproject' || window.location.pathname==='/delproject' ) {
+      this.setState({add:false,del:false})
+    // }
+  };
+  
+}
 
   render(){
- 
+   
 return (
         <main id="app">
+         
          
          
       <Router>
@@ -329,17 +340,17 @@ return (
                </div>
            </div>
           </nav></div>
-          <br/><br/><br/>
-          <div className="container">
+          
+          <div className="container" Style="margin-top:2%;margin-bottom:2%;">
           <div className="row">
-            <span Style="float:left" >Dashboard</span>
+            <span  >Dashboard</span>
             <span className="date" id="date">{this.state.todate}</span>
             
             
             </div>
             
             <div className="row" Style="margin-top:0px;" >
-            <span Style="float:left;" >Projects</span><br/>
+            <span  >Projects</span>
             
             
             
@@ -362,14 +373,14 @@ return (
             <Link to="/deleteproject">
             <button  className="btn-right" onClick={()=>this.toggledel()}><i class="fa fa-minus"></i></button></Link>
             <Switch>
-              <Route path="/addproject">
+              <Route  path="/addproject">
              {this.state.add===true ?<div  className="modal" id="addmodal" Style={this.state.add}>
           
           
           
 
           <div className="inp" >
-          <span class="close" Style="float:right" onClick={this.toggleadd}>&times;</span>
+          <span class="close"  onClick={this.toggleadd}>&times;</span>
           <p className="centertext" >Add New Project</p>
             <input type="text" placeholder="Name" id="pn" name="uname"  onKeyUp={this.getprojectname} class="form-control "></input><br></br>
             <p id="valid" className="valid">{this.state.valid}</p>
@@ -403,6 +414,8 @@ return (
       </div>
       </div>:""}
               </Route>
+              
+              
             </Switch>
             </Router>
             <div className="btngrp">

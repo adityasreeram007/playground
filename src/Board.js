@@ -185,7 +185,14 @@ class Board extends Component {
 
         
     }
-   
+    componentWillMount(){
+      window.onpopstate = (event) => {
+        // if (window.location.pathname==='/addproject' || window.location.pathname==='/delproject' ) {
+          this.setState({addpin:false,delpin:false})
+        // }
+      };
+      
+    }
     toggleAddPin=()=>{
       if (this.state.addpin===false){
         this.setState({addpin:true})}

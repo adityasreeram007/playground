@@ -28,7 +28,7 @@ const Boards = ({ boards, cookie,action,display }) => {
     boards.map(({ date, name, desc, left, progress }, index) => (
         <Link to={"/board/"+name}>
       <div
-        className="grid-item"
+        className="grid-item1"
         id={name}
         onClick={() => action()}
       >
