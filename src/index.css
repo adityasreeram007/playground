@@ -121,7 +121,7 @@ body {
 .flexcolumn-sec {}
 
 .grid-container {
-    display: inline-flex;
+    display: flex;
     gap: 2%;
     flex-wrap: wrap;
     background-color: white;
@@ -129,6 +129,7 @@ body {
 
 .grid-item {
     flex: 49%;
+    min-width: 49%;
     max-width: 49%;
     background-color: rgba(255, 255, 255, 0.8);
     font-size: 30px;
